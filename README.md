@@ -6,8 +6,8 @@ Create an AXI Master UVC to bridge the AXI with APB slave UVC though their inter
 
 AXI contains 5 channels :
 
-1. Write    Address
-2. Read     Address
-3. Write    Data
-4. Read     Data
-5. Write    Response
+1. Write    Address  (input)
+2. Read     Address  (input)
+3. Write    Data     (input)
+4. Read     Data     (output)
+5. Write    Response (output)  
