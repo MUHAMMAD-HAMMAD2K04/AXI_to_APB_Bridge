@@ -19,11 +19,8 @@ class axi_env extends uvm_env;
     endfunction
 
     // function void connect_phase(uvm_phase phase);
-
     //     super.connect_phase(phase);
-
     //     agent.monitor.ap.connect(scb.analysis_export);
-
     // endfunction
 
     function void start_of_simulation_phase(uvm_phase phase);
