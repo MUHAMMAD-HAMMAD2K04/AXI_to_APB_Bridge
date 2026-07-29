@@ -11,7 +11,7 @@ class axi_agent extends uvm_agent;
 
     //Constructor
   function new(string name = "axi_agent", uvm_component parent);
-    super.new(name, parent);
+    super.new(name,parent);
   endfunction 
 
   function void build_phase(uvm_phase phase);
