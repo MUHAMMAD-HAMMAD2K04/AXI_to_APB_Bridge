@@ -29,7 +29,6 @@ class axi_monitor extends uvm_monitor;
 
     endfunction
 
-
     // Run Phase
     task run_phase(uvm_phase phase);
 
@@ -95,10 +94,6 @@ class axi_monitor extends uvm_monitor;
 
     endtask
 
-
-
-
-      
     // Capture Read Transaction
     task collect_read();
 
