@@ -38,22 +38,36 @@ class axi_sequence extends uvm_sequence #(axi_transaction);
 
 endclass : axi_sequence
 
+class axi_single_write_seq extends axi_sequence;
 
-class yapp_5_packets extends axi_sequence;
-  
-  // Required macro for sequences automation
-  `uvm_object_utils(yapp_5_packets)
+    `uvm_object_utils(axi_single_write_seq)
 
-  // Constructor
-  function new(string name="yapp_5_packets");
-    super.new(name);
-  endfunction
+    axi_transaction tr;
 
-  // Sequence body definition
-  virtual task body();
-    `uvm_info(get_type_name(), "Executing yapp_5_packets sequence", UVM_LOW)
-     repeat(5)
-      `uvm_do(req)
-  endtask
-  
-endclass : yapp_5_packets
+    function new(string name="axi_single_write_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        tr = axi_transaction::type_id::create("tr");
+
+        start_item(tr);
+
+        if(!tr.randomize() with
+        {
+            write == 1;
+            addr inside {[32'h0000_0000:32'h0000_FFFF]};
+            strb == 4'b1111;
+        })
+            `uvm_error(get_type_name(),"Randomization Failed")
+
+        finish_item(tr);
+
+        `uvm_info(get_type_name(),
+                  tr.sprint(),
+                  UVM_MEDIUM)
+
+    endtask
+
+endclass
