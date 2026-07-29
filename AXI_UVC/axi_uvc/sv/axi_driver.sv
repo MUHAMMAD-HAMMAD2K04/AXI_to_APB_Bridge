@@ -10,17 +10,12 @@ class axi_driver extends uvm_driver#(axi_transaction);
         super.new(name, parent);
     endfunction //new()
 
-
     // Build Phase
     function void build_phase(uvm_phase phase);
 
         super.build_phase(phase);
 
-        if(!uvm_config_db#(virtual axi_if)::get(
-                this,
-                "",
-                "vif",
-                vif))
+        if(!uvm_config_db#(virtual axi_if)::get(this,"","vif",vif))
         begin
             `uvm_fatal("NOVIF","Virtual Interface not found")
         end
@@ -29,7 +24,6 @@ class axi_driver extends uvm_driver#(axi_transaction);
 
  
     // Reset Bus
-     
 
     task reset_signals();
 
@@ -52,7 +46,6 @@ class axi_driver extends uvm_driver#(axi_transaction);
      
     // Run Phase
      
-
     task run_phase(uvm_phase phase);
 
         axi_transaction tr;
@@ -78,9 +71,7 @@ class axi_driver extends uvm_driver#(axi_transaction);
      
     // Write Transaction
      
-
     task drive_write(axi_transaction tr);
-
          
         // Write Address
         @(posedge vif.ACLK);
@@ -93,11 +84,8 @@ class axi_driver extends uvm_driver#(axi_transaction);
         @(posedge vif.ACLK);
 
         vif.awvalid <= 0;
-
          
         // Write Data
-         
-
         vif.wdata  <= tr.data;
         vif.wstrb  <= tr.strb;
         vif.wlast  <= 1;
@@ -110,10 +98,7 @@ class axi_driver extends uvm_driver#(axi_transaction);
         vif.wvalid <= 0;
         vif.wlast  <= 0;
 
-         
         // Write Response
-         
-
         vif.bready <= 1;
 
         wait(vif.bvalid);
@@ -130,22 +115,17 @@ class axi_driver extends uvm_driver#(axi_transaction);
 
         vif.bready <= 0;
 
-        `uvm_info(get_type_name(),
-                  "WRITE COMPLETE",
-                  UVM_MEDIUM)
+        `uvm_info(get_type_name(),"WRITE COMPLETE",UVM_MEDIUM)
 
     endtask
 
      
     // Read Transaction
-     
 
     task drive_read(axi_transaction tr);
-
          
         // Read Address
-         
-
+        
         @(posedge vif.ACLK);
 
         vif.araddr  <= tr.addr;
@@ -159,7 +139,6 @@ class axi_driver extends uvm_driver#(axi_transaction);
 
          
         // Read Data
-         
 
         vif.rready <= 1;
 
@@ -169,21 +148,14 @@ class axi_driver extends uvm_driver#(axi_transaction);
 
         if(vif.rresp != 2'b00)
         begin
-            `uvm_error("READ",
-                $sformatf(
-                "Read Response Error %0d",
-                vif.rresp))
+            `uvm_error("READ",$sformatf("Read Response Error %0d",vif.rresp))
         end
 
         @(posedge vif.ACLK);
 
         vif.rready <= 0;
 
-        `uvm_info(get_type_name(),
-                  $sformatf(
-                  "READ DATA = %h",
-                  tr.data),
-                  UVM_MEDIUM)
+        `uvm_info(get_type_name(),$sformatf("READ DATA = %h",tr.data),UVM_MEDIUM)
 
     endtask
 
