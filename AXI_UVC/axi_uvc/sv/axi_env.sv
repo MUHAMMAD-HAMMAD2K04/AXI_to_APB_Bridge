@@ -7,7 +7,7 @@ class axi_env extends uvm_env;
     `uvm_component_utils(axi_env)
 
     function new(string name = "axi_env", uvm_component parent);
-        super.new(name, parent)
+        super.new(name, parent);
     endfunction //new()
 
     function void build_phase(uvm_phase phase);
