@@ -2,182 +2,72 @@ interface axi_if #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 )(
-    input logic ACLK,
-    input logic ARESETn
+    input logic PCLK,
+    input logic PRESET
 );
 
- 
-// Write Address Channel
-logic [ADDR_WIDTH-1:0] awaddr;
-logic                  awvalid;
-logic                  awready;
+    localparam STRB_WIDTH = DATA_WIDTH/8;
 
- 
-// Write Data Channel
-logic [DATA_WIDTH-1:0] wdata;
-logic [(DATA_WIDTH/8)-1:0] wstrb;
-logic                  wlast;
-logic                  wvalid;
-logic                  wready;
+    // Request FIFO
+    logic                        req_fifo_empty;
+    logic [ADDR_WIDTH:0]         req_fifo_rd_data;
+    logic                        req_fifo_rd_en;
 
- 
-// Write Response Channel
-logic [1:0]            bresp;
-logic                  bvalid;
-logic                  bready;
+    // Write FIFO
+    logic                        wr_fifo_empty;
+    logic [DATA_WIDTH+STRB_WIDTH-1:0] wr_fifo_rd_data;
+    logic                        wr_fifo_rd_en;
 
- 
-// Read Address Channel
-logic [ADDR_WIDTH-1:0] araddr;
-logic                  arvalid;
-logic                  arready;
+    // Read FIFO
+    logic                        rd_fifo_full;
+    logic                        rd_fifo_wr_en;
+    logic [DATA_WIDTH-1:0]       rd_fifo_wr_data;
 
- 
-// Read Data Channel
-logic [DATA_WIDTH-1:0] rdata;
-logic [1:0]            rresp;
-logic                  rlast;
-logic                  rvalid;
-logic                  rready;
+    // Clocking Block for Driver
+    clocking drv_cb @(posedge PCLK);
+        default input #1step output #1ns;
 
- 
-// Master Clocking Block
- 
+        output req_fifo_empty;
+        output req_fifo_rd_data;
 
-clocking master_cb @(posedge ACLK);
+        output wr_fifo_empty;
+        output wr_fifo_rd_data;
 
-    default input #1step output #1step;
+        output rd_fifo_full;
 
-    // Write Address
-    output awaddr;
-    output awvalid;
-    input  awready;
+        input req_fifo_rd_en;
+        input wr_fifo_rd_en;
+        input rd_fifo_wr_en;
+        input rd_fifo_wr_data;
+    endclocking
 
-    // Write Data
-    output wdata;
-    output wstrb;
-    output wlast;
-    output wvalid;
-    input  wready;
+    // Clocking Block for Monitor
+    clocking mon_cb @(posedge PCLK);
+        default input #1step;
 
-    // Write Response
-    input  bresp;
-    input  bvalid;
-    output bready;
+        input req_fifo_empty;
+        input req_fifo_rd_data;
+        input req_fifo_rd_en;
 
-    // Read Address
-    output araddr;
-    output arvalid;
-    input  arready;
+        input wr_fifo_empty;
+        input wr_fifo_rd_data;
+        input wr_fifo_rd_en;
 
-    // Read Data
-    input  rdata;
-    input  rresp;
-    input  rlast;
-    input  rvalid;
-    output rready;
+        input rd_fifo_full;
+        input rd_fifo_wr_en;
+        input rd_fifo_wr_data;
+    endclocking
 
-endclocking
+    modport DRIVER(
+        clocking drv_cb,
+        input PCLK,
+        input PRESET
+    );
 
- 
-// Slave Clocking Block
- 
-clocking slave_cb @(posedge ACLK);
-
-    default input #1step output #1step;
-
-    // Write Address
-    input  awaddr;
-    input  awvalid;
-    output awready;
-
-    // Write Data
-    input  wdata;
-    input  wstrb;
-    input  wlast;
-    input  wvalid;
-    output wready;
-
-    // Write Response
-    output bresp;
-    output bvalid;
-    input  bready;
-
-    // Read Address
-    input  araddr;
-    input  arvalid;
-    output arready;
-
-    // Read Data
-    output rdata;
-    output rresp;
-    output rlast;
-    output rvalid;
-    input  rready;
-
-endclocking
-
- 
-// Monitor Clocking Block
- 
-
-clocking monitor_cb @(posedge ACLK);
-
-    default input #1step;
-
-    // Write Address
-    input awaddr;
-    input awvalid;
-    input awready;
-
-    // Write Data
-    input wdata;
-    input wstrb;
-    input wlast;
-    input wvalid;
-    input wready;
-
-    // Write Response
-    input bresp;
-    input bvalid;
-    input bready;
-
-    // Read Address
-    input araddr;
-    input arvalid;
-    input arready;
-
-    // Read Data
-    input rdata;
-    input rresp;
-    input rlast;
-    input rvalid;
-    input rready;
-
-endclocking
-
- 
-// Modports
- 
-// Used by AXI Master Driver
-modport MASTER (
-    clocking master_cb,
-    input ACLK,
-    input ARESETn
-);
-
-// Used by AXI Slave (if needed)
-modport SLAVE (
-    clocking slave_cb,
-    input ACLK,
-    input ARESETn
-);
-
-// Used by Monitor
-modport MONITOR (
-    clocking monitor_cb,
-    input ACLK,
-    input ARESETn
-);
+    modport MONITOR(
+        clocking mon_cb,
+        input PCLK,
+        input PRESET
+    );
 
 endinterface
