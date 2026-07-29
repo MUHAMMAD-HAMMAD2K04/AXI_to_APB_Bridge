@@ -15,7 +15,7 @@ class axi_driver extends uvm_driver#(axi_transaction);
 
         super.build_phase(phase);
 
-        if(!uvm_config_db#(virtual axi_if)::get(this,"","vif",vif))
+        if(!axi_vif_config::get(this,"","vif",vif))
         begin
             `uvm_fatal("NOVIF","Virtual Interface not found")
         end
