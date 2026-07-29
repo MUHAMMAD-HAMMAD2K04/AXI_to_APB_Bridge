@@ -5,7 +5,7 @@ class axi_sequencer extends uvm_sequencer#(axi_transaction);
 
      //ADD A CONSTRUCTOR    
     function new(string name = "axi_sequencer", uvm_component parent);
-        super.new(name, parent);
+        super.new(name,parent);
     endfunction //new()
 
     function void start_of_simulation_phase(uvm_phase phase);
