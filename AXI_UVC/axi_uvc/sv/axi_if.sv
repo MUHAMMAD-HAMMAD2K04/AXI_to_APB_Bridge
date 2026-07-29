@@ -82,7 +82,6 @@ endclocking
  
 // Slave Clocking Block
  
-
 clocking slave_cb @(posedge ACLK);
 
     default input #1step output #1step;
@@ -160,7 +159,6 @@ endclocking
  
 // Modports
  
-
 // Used by AXI Master Driver
 modport MASTER (
     clocking master_cb,
