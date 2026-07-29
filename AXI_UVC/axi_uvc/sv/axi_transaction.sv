@@ -37,45 +37,15 @@ class axi_transaction extends uvm_sequence_item;
     function void do_print(uvm_printer printer);
         super.do_print(printer);
 
-        printer.print_field(
-            "WRITE",
-            write,
-            1,
-            UVM_BIN
-        );
+        printer.print_field("WRITE",write,1,UVM_BIN);
 
+        printer.print_field("ADDR",addr,32,UVM_HEX);
 
-        printer.print_field(
-            "ADDR",
-            addr,
-            32,
-            UVM_HEX
-        );
+        printer.print_field("DATA",data,32,UVM_HEX);
 
+        printer.print_field("STRB",strb,4,UVM_BIN);
 
-        printer.print_field(
-            "DATA",
-            data,
-            32,
-            UVM_HEX
-        );
-
-
-        printer.print_field(
-            "STRB",
-            strb,
-            4,
-            UVM_BIN
-        );
-
-
-        printer.print_field(
-            "RESP",
-            resp,
-            2,
-            UVM_BIN
-        );
-
+        printer.print_field("RESP",resp,2,UVM_BIN);
 
     endfunction
 
