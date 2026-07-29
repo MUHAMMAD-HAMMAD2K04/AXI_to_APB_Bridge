@@ -9,12 +9,16 @@ package axi_pkg;
     // INCLUDING ALL MY CLASSES IN "axi_pkg.sv" 
     // SO THAT TOP COULD ACCESS THEM EASILY
     
-    `include "axi_packet.sv"
-    `include "axi_monitor.sv"
+    `include "axi_transaction.sv"
     `include "axi_sequencer.sv"
-    `include "axi_sequence.sv"
     `include "axi_driver.sv"
+    `include "axi_monitor.sv"
     `include "axi_agent.sv"
     `include "axi_env.sv"
+    `include "axi_sequence.sv"
+
+// Include test library INSIDE the package
+    `include "axi_tb.sv"
+    `include "axi_test_lib.sv"
 
 endpackage 
