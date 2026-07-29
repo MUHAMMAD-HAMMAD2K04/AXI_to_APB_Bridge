@@ -9,7 +9,7 @@ class axi_sequencer extends uvm_sequencer#(axi_transaction);
     endfunction //new()
 
     function void start_of_simulation_phase(uvm_phase phase);
-        `uvm_info(get_type_name(),"Running Simulation ...",UVM_HIGH);
+        `uvm_info(get_type_name(),"Running Simulation ...", UVM_HIGH);
     endfunction
 
 endclass //axi_sequencer extends uvm_sequencer
