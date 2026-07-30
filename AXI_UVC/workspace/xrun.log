@@ -703,8 +703,9 @@ UVM_INFO /home/cc/Downloads/AXI_UVC/AXI_to_APB_Bridge/AXI_UVC/axi_uvc/sv/axi_seq
 UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'pre_reset'
 UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'reset'
 UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'post_reset'
-UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'pre_configure'
-UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'configure'
+UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1dELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'post_shutdown'
+TOOL:	xrun(64)	23.09-s006: Exiting on Jul 29, 2026 at 22:29:46 PKT  (total: 02:57:36)
+tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'configure'
 UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'post_configure'
 UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'pre_main'
 UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.tb.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'main'
@@ -715,13 +716,9 @@ UVM_INFO /home/cc/mnt/XCELIUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm
 UVM_INFO /home/cc/Downloads/AXI_UVC/AXI_to_APB_Bridge/AXI_UVC/axi_uvc/sv/axi_driver.sv(36) @ 45000: uvm_test_top.tb.env.agent.driver [DRV] Waiting for sequence item...
 UVM_INFO /home/cc/Downloads/AXI_UVC/AXI_to_APB_Bridge/AXI_UVC/axi_uvc/sv/axi_driver.sv(39) @ 45000: uvm_test_top.tb.env.agent.driver [DRV] Sequence received: WRITE=1 ADDR=00000c98 DATA=769b1a60
 UVM_INFO /home/cc/Downloads/AXI_UVC/AXI_to_APB_Bridge/AXI_UVC/axi_uvc/sv/axi_monitor.sv(53) @ 85000: uvm_test_top.tb.env.agent.monitor [axi_monitor] Recieved Write Transaction:
-------------------------------------------
-Name     Type             Size  Value     
-------------------------------------------
-tr       axi_transaction  -     @3729     
-  write  integral         1     'h1       
-  addr   integral         32    'hc98     
-  data   integral         32    'h769b1a60
+--------------------------IUM2309/tools/methodology/UVM/CDNS-1.1d/sv/src/seq/uvm_sequencer_base.svh(1385) @ 0: uvm_test_top.env.agent.sequencer [PHASESEQ] No default phase sequence for phase 'post_shutdown'
+TOOL:	xrun(64)	23.09-s006: Exiting on Jul 29, 2026 at 22:29:46 PKT  (total: 03:07:49)
+69b1a60
   strb   integral         4     'hf       
   resp   integral         2     'h0       
   WRITE  integral         1     'b1       
