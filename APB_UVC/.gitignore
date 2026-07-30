@@ -1,0 +1,9 @@
+workspace/*
+!workspace/file.f
+!workspace/cshrc
+!workspace/run_coverage.csh
+*.log
+xrun.history
+xcelium.d
+qaLog.txt
+xmsim*
