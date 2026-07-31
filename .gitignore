@@ -1,0 +1,5 @@
+workspace/*.log
+workspace/*.txt
+workspace/xrun.*
+workspace/xcelium.d
+workspace/qaLog.txt
