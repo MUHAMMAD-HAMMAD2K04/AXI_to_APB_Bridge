@@ -5,14 +5,14 @@
 
 -timescale 1ns/1ns
 
--incdir /home/cc/Documents/AXI_to_APB_Bridge/axi_uvc/sv
+-incdir /home/cc/Documents/AXI_to_APB_Bridge/axi_uvc/
 -incdir /home/cc/Documents/AXI_to_APB_Bridge/APB
 -incdir /home/cc/Documents/AXI_to_APB_Bridge/DUT
 -incdir /home/cc/Documents/AXI_to_APB_Bridge/tb
 
 
-/home/cc/Documents/AXI_to_APB_Bridge/axi_uvc/sv/axi_if.sv
-/home/cc/Documents/AXI_to_APB_Bridge/axi_uvc/sv/axi_pkg.sv
+/home/cc/Documents/AXI_to_APB_Bridge/axi_uvc/axi_if.sv
+/home/cc/Documents/AXI_to_APB_Bridge/axi_uvc/axi_pkg.sv
 
 /home/cc/Documents/AXI_to_APB_Bridge/APB/apb_if.sv
 /home/cc/Documents/AXI_to_APB_Bridge/APB/apb_pkg.sv
