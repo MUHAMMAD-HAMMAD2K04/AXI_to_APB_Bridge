@@ -51,7 +51,7 @@ class axi_single_write_seq_test extends axi_base_test;
 
         uvm_config_db#(uvm_object_wrapper)::set(
             this,
-            "tb.env.agent.sequencer.run_phase",
+            "tb.AXI_env.agent.sequencer.run_phase",
             "default_sequence",
             axi_five_write_seq::type_id::get()
         );
@@ -81,7 +81,7 @@ class reset_seq_test extends axi_base_test;
 
         uvm_config_db#(uvm_object_wrapper)::set(
             this,
-            "tb.env.agent.sequencer.run_phase",
+            "tb.AXI_env.agent.sequencer.run_phase",
             "default_sequence",
             reset_seq::type_id::get()
         );
@@ -110,7 +110,7 @@ class axi_write_seq_test extends axi_base_test;
 
         uvm_config_db#(uvm_object_wrapper)::set(
             this,
-            "tb.env.agent.sequencer.run_phase",
+            "tb.AXI_env.agent.sequencer.run_phase",
             "default_sequence",
             axi_write_seq::type_id::get()
         );
@@ -140,7 +140,7 @@ class axi_read_seq_test extends axi_base_test;
 
         uvm_config_db#(uvm_object_wrapper)::set(
             this,
-            "tb.env.agent.sequencer.run_phase",
+            "tb.AXI_env.agent.sequencer.run_phase",
             "default_sequence",
             axi_read_seq::type_id::get()
         );
