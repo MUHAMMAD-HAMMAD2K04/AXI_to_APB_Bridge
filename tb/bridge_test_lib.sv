@@ -55,3 +55,88 @@ class axi_single_write_seq_test extends axi_base_test;
     endtask
 
 endclass
+//----------------------------------------------
+//----------------------------------------------
+class reset_seq_test extends axi_base_test;
+
+    `uvm_component_utils(reset_seq_test)
+
+    function new(string name="reset_seq_test",uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+
+    task run_phase(uvm_phase phase);
+
+        reset_seq seq;
+
+        super.run_phase(phase);
+
+        phase.raise_objection(this);
+
+        seq = reset_seq::type_id::create("seq");
+
+        seq.start(tb.env.agent.sequencer);
+
+        phase.drop_objection(this);
+
+    endtask
+
+endclass
+
+//--------------------------------------------
+//--------------------------------------------
+class axi_write_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_write_seq_test)
+
+    function new(string name="axi_write_seq_test",uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+
+    task run_phase(uvm_phase phase);
+
+        axi_write_seq seq;
+
+        super.run_phase(phase);
+
+        phase.raise_objection(this);
+
+        seq = axi_write_seq::type_id::create("seq");
+
+        seq.start(tb.env.agent.sequencer);
+
+        phase.drop_objection(this);
+
+    endtask
+
+endclass
+//--------------------------------------------
+//--------------------------------------------
+class axi_read_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_read_seq_test)
+
+    function new(string name="axi_read_seq_test",uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+
+    task run_phase(uvm_phase phase);
+
+        axi_read_seq seq;
+
+        super.run_phase(phase);
+
+        phase.raise_objection(this);
+
+        seq = axi_read_seq::type_id::create("seq");
+
+        seq.start(tb.env.agent.sequencer);
+
+        phase.drop_objection(this);
+
+    endtask
+
+endclass
