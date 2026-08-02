@@ -1,4 +1,4 @@
-class axi_base_seq extends uvm_sequence #(axi_to_apb_packet);
+class axi_base_seq extends uvm_sequence #(axi_transaction);
   `uvm_object_utils(axi_base_seq)
 
     function new(string name="axi_base_seq");
@@ -40,7 +40,6 @@ class axi_five_write_seq extends axi_base_seq;
 
     `uvm_object_utils(axi_five_write_seq)
 
-
     function new(string name="axi_five_write_seq");
         super.new(name);
     endfunction
@@ -73,14 +72,12 @@ class axi_five_write_seq extends axi_base_seq;
 
 endclass
 
-
 // Reset Sequence
 class reset_seq extends axi_base_seq;
 
     `uvm_object_utils(reset_seq)
 
-
-    function new(string name="reset_seq");
+    function new(string name = "reset_seq");
         super.new(name);
     endfunction
 
@@ -90,19 +87,16 @@ class reset_seq extends axi_base_seq;
                   "Starting Reset Sequence",
                   UVM_LOW)
 
-
         `uvm_do_with(req,
         {
-            reset == 1'b1;
-            write == 1'b0;
-            addr  == '0;
-            data  == '0;
-            strb  == '0;
+            write == 0;
+            addr  == 32'h0000_0000;
+            data  == 32'h0000_0000;
+            strb  == 4'b0000;
         })
 
-
         `uvm_info(get_type_name(),
-                  "Reset Transaction Sent",
+                  "Reset Sequence Completed",
                   UVM_MEDIUM)
 
     endtask
