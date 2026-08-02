@@ -3,7 +3,7 @@ class axi_base_test extends uvm_test;
 
     `uvm_component_utils(axi_base_test)
 
-    axi_tb tb;
+    bridge_tb tb;
 
     function new(string name="axi_base_test",
                  uvm_component parent);
@@ -11,34 +11,29 @@ class axi_base_test extends uvm_test;
     endfunction
 
     function void build_phase(uvm_phase phase);
-
         super.build_phase(phase);
-
-        tb = axi_tb::type_id::create("tb", this);
-
+        tb = bridge_tb::type_id::create("tb", this);
     endfunction
+
+    task run_phase(uvm_phase phase);
+     phase.phase_done.set_drain_time(this, 500ns);
+    endtask
 
     function void end_of_elaboration_phase(uvm_phase phase);
-
         super.end_of_elaboration_phase(phase);
-
         uvm_top.print_topology();
-
-        phase.phase_done.set_drain_time(this, 100ns);
-
     endfunction
-
 
 endclass
 
 
 // Five Write Sequence Test
-class axi_single_write_seq_test extends axi_base_test;
+class axi_five_write_seq_test extends axi_base_test;
 
-    `uvm_component_utils(axi_single_write_seq_test)
+    `uvm_component_utils(axi_five_write_seq_test)
 
 
-    function new(string name="axi_single_write_seq_test",
+    function new(string name="axi_five_write_seq_test",
                  uvm_component parent);
         super.new(name,parent);
     endfunction
