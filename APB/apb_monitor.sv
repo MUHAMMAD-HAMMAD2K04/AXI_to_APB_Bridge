@@ -1,69 +1,117 @@
 class apb_monitor extends uvm_monitor;
+
     `uvm_component_utils(apb_monitor)
 
-    virtual interface apb_if.monitor_mp vif;
+    virtual apb_if.monitor_mp vif;
 
     axi_to_apb_packet pkt;
 
+    uvm_analysis_port #(axi_to_apb_packet) analysis_port;
+
     int num_pkt_col;
 
-    function new(string name = "apb_monitor" , uvm_component parent);
+    function new(string name="apb_monitor", uvm_component parent);
         super.new(name,parent);
+
+        analysis_port = new("analysis_port", this);
     endfunction
 
     function void connect_phase(uvm_phase phase);
-        if(!uvm_config_db#(virtual interface apb_if.monitor_mp)::get(this, "","vif", vif))
-            `uvm_error("NO-VIF", "Missing virtual interface")
+
+        super.connect_phase(phase);
+
+        if(!uvm_config_db#(virtual apb_if.monitor_mp)::get(this,"","vif",vif))
+            `uvm_fatal("NO_VIF","Virtual Interface Not Found");
+
     endfunction
 
     function void start_of_simulation_phase(uvm_phase phase);
-        `uvm_info(get_type_name(),"Running Simulation---", UVM_HIGH)
+
+        `uvm_info(get_type_name(),
+                  "APB Monitor Started",
+                  UVM_LOW);
+
     endfunction
 
     task run_phase(uvm_phase phase);
-        fork
-            collected_packet();
-        join
-    endtask
 
-    task collected_packet();
-        wait (vif.rst == 1);
+        wait(vif.rst);
+
         forever begin
 
             @(posedge vif.clk);
 
-            if (vif.PTRANSFER) begin
-                pkt = axi_to_apb_packet::type_id::create("pkt");
+              
+            // Detect APB SETUP phase    
+            if(vif.PTRANSFER) begin
+
+                pkt = axi_to_apb_packet::type_id::create("pkt", this);
 
                 pkt.addr  = vif.PADDR;
                 pkt.write = vif.PWRITE;
-                pkt.wdata = vif.PWDATA;   // Valid for writes (ignored for reads)
-                pkt.strb  = vif.PSTRB;    // Valid for writes (ignored for reads)
+                pkt.wdata = vif.PWDATA;
+                pkt.strb  = vif.PSTRB;
 
                 `uvm_info(get_type_name(),
-                    $sformatf("SETUP phase: addr=0x%0h, write=%b, wdata=0x%0h, strb=0x%0h",
-                            pkt.addr, pkt.write, pkt.rdata, pkt.strb),
-                    UVM_HIGH)
+                          $sformatf("SETUP : ADDR=%08h WRITE=%0d WDATA=%08h STRB=%0h",
+                                    pkt.addr,
+                                    pkt.write,
+                                    pkt.wdata,
+                                    pkt.strb),
+                          UVM_HIGH)
 
-                @(posedge vif.clk);
+                 
+                // Wait until APB transfer completes     
+                while(!vif.PREADY)
+                    @(posedge vif.clk);
 
-                pkt.rdata = vif.PRDATA;
                 pkt.ready = vif.PREADY;
 
-                while (vif.PTRANSFER)
-                    @(posedge vif.clk);
+                if(!pkt.write)
+                    pkt.rdata = vif.PRDATA;
+                else
+                    pkt.rdata = '0;
 
                 num_pkt_col++;
 
+                analysis_port.write(pkt);
+
                 `uvm_info(get_type_name(),
-                    $sformatf("APB transfer complete: addr=0x%0h, write=%b, rdata=0x%0h, ready=%b",
-                            pkt.addr, pkt.write, pkt.rdata, pkt.ready),
-                    UVM_MEDIUM)
+                          $sformatf(
+                          "\n----------------------------------------\
+                           \n APB TRANSACTION COMPLETE\
+                           \n WRITE : %0d\
+                           \n ADDR  : %08h\
+                           \n WDATA : %08h\
+                           \n RDATA : %08h\
+                           \n STRB  : %0h\
+                           \n READY : %0d\
+                           \n Packet Count : %0d\
+                           \n----------------------------------------",
+                          pkt.write,
+                          pkt.addr,
+                          pkt.wdata,
+                          pkt.rdata,
+                          pkt.strb,
+                          pkt.ready,
+                          num_pkt_col),
+                          UVM_MEDIUM);
+
             end
+
         end
+
     endtask
 
     function void report_phase(uvm_phase phase);
-        `uvm_info(get_type_name(), $sformatf("Report: APB Monitor Collected %0d Packets", num_pkt_col), UVM_LOW)
-    endfunction : report_phase
+
+        super.report_phase(phase);
+
+        `uvm_info(get_type_name(),
+                  $sformatf("APB Monitor Collected %0d Packets",
+                            num_pkt_col),
+                  UVM_LOW);
+
+    endfunction
+
 endclass
