@@ -4,6 +4,9 @@ module top;
 
     import apb_pkg::*;
     import axi_pkg::*;
+
+    `include "bridge_ref_model.sv"
+    `include "bridge_scoreboard.sv"
     `include "bridge_tb.sv"
     `include "bridge_test_lib.sv"
 
