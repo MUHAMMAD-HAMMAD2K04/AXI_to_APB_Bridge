@@ -34,8 +34,100 @@ class axi_base_seq extends uvm_sequence #(axi_transaction);
     endtask : post_body
 endclass : axi_base_seq
 
- 
-// Five Write Sequence
+// Reset Sequence
+class reset_seq extends axi_base_seq;
+
+    `uvm_object_utils(reset_seq)
+
+    function new(string name="reset_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        req = axi_transaction::type_id::create("req");
+
+        start_item(req);
+
+        assert(req.randomize() with {
+            write == 0;
+            addr  == 32'h0;
+            data  == 32'h0;
+            strb  == 4'h0;
+        });
+
+        `uvm_info(get_type_name(),
+        {"Generated RESET Transaction\n",req.sprint()},
+        UVM_MEDIUM)
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+// Single Write Sequence
+class axi_write_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_write_seq)
+
+    function new(string name="axi_write_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        req = axi_transaction::type_id::create("req");
+
+        start_item(req);
+
+        assert(req.randomize() with {
+            write == 1;
+            addr inside {[32'h0:32'hFFFF]};
+            strb == 4'hF;
+        });
+
+        `uvm_info(get_type_name(),
+        {"Generated WRITE Transaction\n",req.sprint()},
+        UVM_MEDIUM)
+
+        finish_item(req);
+
+    endtask
+
+endclass
+
+// Single Read Sequence
+class axi_read_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_read_seq)
+
+    function new(string name="axi_read_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        req = axi_transaction::type_id::create("req");
+
+        start_item(req);
+
+        assert(req.randomize() with {
+            write == 0;
+            addr inside {[32'h0:32'hFFFF]};
+        });
+
+        `uvm_info(get_type_name(),
+        {"Generated READ Transaction\n",req.sprint()},
+        UVM_MEDIUM)
+
+        finish_item(req);
+
+    endtask
+
+endclass 
+
+// Five Consecutive Write Sequence
 class axi_five_write_seq extends axi_base_seq;
 
     `uvm_object_utils(axi_five_write_seq)
@@ -44,27 +136,25 @@ class axi_five_write_seq extends axi_base_seq;
         super.new(name);
     endfunction
 
-
     virtual task body();
-
-        `uvm_info(get_type_name(),
-                  "Starting Five Write Sequence",
-                  UVM_LOW)
 
         repeat(5) begin
 
-            `uvm_do_with(req,
-            {
-                write == 1'b1;
-                addr inside {[32'h0000_0000 :
-                              32'h0000_FFFF]};
-                strb == 4'b1111;
-            })
+            req = axi_transaction::type_id::create("req");
+
+            start_item(req);
+
+            assert(req.randomize() with {
+                write == 1;
+                addr inside {[32'h0:32'hFFFF]};
+                strb == 4'hF;
+            });
 
             `uvm_info(get_type_name(),
-                      $sformatf("Write Transaction:\n%s",
-                      req.sprint()),
-                      UVM_MEDIUM)
+            {"Generated WRITE\n",req.sprint()},
+            UVM_MEDIUM)
+
+            finish_item(req);
 
         end
 
@@ -72,107 +162,102 @@ class axi_five_write_seq extends axi_base_seq;
 
 endclass
 
-// Reset Sequence
-class reset_seq extends axi_base_seq;
+// Five Consecutive Read Sequence
+class axi_five_read_seq extends axi_base_seq;
 
-    `uvm_object_utils(reset_seq)
+    `uvm_object_utils(axi_five_read_seq)
 
-    function new(string name = "reset_seq");
+    function new(string name="axi_five_read_seq");
         super.new(name);
     endfunction
 
     virtual task body();
 
-        `uvm_info(get_type_name(),
-                  "Starting Reset Sequence",
-                  UVM_LOW)
+        repeat(5) begin
 
-        `uvm_do_with(req,
-        {
-            write == 0;
-            addr  == 32'h0000_0000;
-            data  == 32'h0000_0000;
-            strb  == 4'b0000;
-        })
+            req = axi_transaction::type_id::create("req");
 
-        `uvm_info(get_type_name(),
-                  "Reset Sequence Completed",
-                  UVM_MEDIUM)
+            start_item(req);
+
+            assert(req.randomize() with {
+                write == 0;
+                addr inside {[32'h0:32'hFFFF]};
+            });
+
+            `uvm_info(get_type_name(),
+            {"Generated READ\n",req.sprint()},
+            UVM_MEDIUM)
+
+            finish_item(req);
+
+        end
 
     endtask
 
 endclass
 
+// Wait State Sequence
+class axi_wait_state_seq extends axi_base_seq;
 
-// Single AXI Write Sequence
-class axi_write_seq extends axi_base_seq;
+    `uvm_object_utils(axi_wait_state_seq)
 
-    `uvm_object_utils(axi_write_seq)
-
-
-    function new(string name="axi_write_seq");
+    function new(string name="axi_wait_state_seq");
         super.new(name);
     endfunction
 
-
     virtual task body();
 
+        repeat(10) begin
 
-        `uvm_info(get_type_name(),
-                  "Starting AXI Write Sequence",
-                  UVM_LOW)
+            req = axi_transaction::type_id::create("req");
+
+            start_item(req);
+
+            assert(req.randomize() with {
+                addr inside {[32'h0:32'hFFFF]};
+            });
+
+            `uvm_info(get_type_name(),
+            {"Generated WAIT STATE SEQ\n",req.sprint()},
+            UVM_MEDIUM)
 
 
-        `uvm_do_with(req,
-        {
-            write == 1'b1;
-            addr inside {[32'h0000_0000 :
-                          32'h0000_FFFF]};
-            strb == 4'b1111;
-        })
+            finish_item(req);
 
-
-        `uvm_info(get_type_name(),
-                  $sformatf("Write Transaction:\n%s",
-                  req.sprint()),
-                  UVM_MEDIUM)
+        end
 
     endtask
 
 endclass
 
+// Random Stress Sequence
+class axi_stress_seq extends axi_base_seq;
 
-// AXI Read Sequence
-class axi_read_seq extends axi_base_seq;
+    `uvm_object_utils(axi_stress_seq)
 
-    `uvm_object_utils(axi_read_seq)
-
-
-    function new(string name="axi_read_seq");
+    function new(string name="axi_stress_seq");
         super.new(name);
     endfunction
 
-
     virtual task body();
 
+        repeat(1000) begin
 
-        `uvm_info(get_type_name(),
-                  "Starting AXI Read Sequence",
-                  UVM_LOW)
+            req = axi_transaction::type_id::create("req");
 
+            start_item(req);
 
-        `uvm_do_with(req,
-        {
-            write == 1'b0;
-            addr inside {[32'h0000_0000 :
-                          32'h0000_FFFF]};
-        })
+            assert(req.randomize() with {
+                addr inside {[32'h0:32'hFFFF]};
+            });
 
+            `uvm_info(get_type_name(),
+            {"Generated STRESS STATE SEQ\n",req.sprint()},
+            UVM_MEDIUM)
 
-        `uvm_info(get_type_name(),
-                  $sformatf("Read Transaction:\n%s",
-                  req.sprint()),
-                  UVM_MEDIUM)
+            finish_item(req);
+
+        end
 
     endtask
 
