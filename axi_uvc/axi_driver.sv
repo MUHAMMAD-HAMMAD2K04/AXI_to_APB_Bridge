@@ -36,7 +36,9 @@ class axi_driver extends uvm_driver #(axi_transaction);
             `uvm_info("DRV", "Waiting for sequence item...", UVM_HIGH)
             seq_item_port.get_next_item(tr);
 
-            //`uvm_info("DRV", $sformatf("Sequence received: WRITE=%0d ADDR=%h DATA=%h", tr.write, tr.addr, tr.data), UVM_MEDIUM)
+           `uvm_info(get_type_name(), $sformatf("Send Write Transaction:\n%s", tr.sprint()), UVM_MEDIUM)
+
+            `uvm_info("DRV", $sformatf("Sequence received: WRITE=%0d ADDR=%h DATA=%h", tr.write, tr.addr, tr.data), UVM_MEDIUM)
 
             if(tr.write)
                 drive_write(tr);
