@@ -24,7 +24,6 @@ class axi_base_test extends uvm_test;
         super.end_of_elaboration_phase(phase);
         uvm_top.print_topology();
     endfunction
-
 endclass
 
 
@@ -51,9 +50,7 @@ class reset_seq_test extends axi_base_test;
             "default_sequence",
             reset_seq::type_id::get()
         );
-
     endfunction
-
 endclass
 
 
@@ -80,9 +77,7 @@ class axi_write_seq_test extends axi_base_test;
             "default_sequence",
             axi_write_seq::type_id::get()
         );
-
     endfunction
-
 
 endclass
 
@@ -110,9 +105,7 @@ class axi_read_seq_test extends axi_base_test;
             "default_sequence",
             axi_read_seq::type_id::get()
         );
-
     endfunction
-
 endclass
 
 
@@ -139,9 +132,7 @@ class axi_five_write_seq_test extends axi_base_test;
             "default_sequence",
             axi_five_write_seq::type_id::get()
         );
-
     endfunction
-
 
 endclass
 
@@ -156,26 +147,24 @@ class wait_state_test extends axi_base_test;
         super.new(name,parent);
     endfunction
 
-function void build_phase(uvm_phase phase);
+    function void build_phase(uvm_phase phase);
 
-    super.build_phase(phase);
+        super.build_phase(phase);
 
-    uvm_config_db#(int)::set(
-        this,
-        "*agent.driver*",
-        "wait_cycles",
-        3
-    );
-
-    uvm_config_db#(uvm_object_wrapper)::set(
-        this,
-        "tb.APB_env.agent.sequencer.run_phase",
-        "default_sequence",
-        axi_wait_state_seq::type_id::get()
+        uvm_config_db#(int)::set(
+            this,
+            "*agent.driver*",
+            "wait_cycles",
+            3
         );
 
-endfunction
-
+        uvm_config_db#(uvm_object_wrapper)::set(
+            this,
+            "tb.AXI_env.agent.sequencer.run_phase",
+            "default_sequence",
+            axi_wait_state_seq::type_id::get()
+            );
+    endfunction
 endclass
 
 
@@ -190,29 +179,26 @@ class stress_test extends axi_base_test;
         super.new(name,parent);
     endfunction
 
-function void build_phase(uvm_phase phase);
+    function void build_phase(uvm_phase phase);
 
-    int delay;
+        int delay;
 
-    super.build_phase(phase);
+        super.build_phase(phase);
 
-    delay = $urandom_range(0,5);
+        delay = $urandom_range(0,5);
 
-    uvm_config_db#(int)::set(
-        this,
-        "*agent.driver*",
-        "wait_cycles",
-        delay
-    );
+        uvm_config_db#(int)::set(
+            this,
+            "*agent.driver*",
+            "wait_cycles",
+            delay
+        );
 
-    uvm_config_db#(uvm_object_wrapper)::set(
-        this,
-        "tb.APB_env.agent.sequencer.run_phase",
-        "default_sequence",
-        axi_stress_seq::type_id::get()
-    );
-
-
-endfunction
-
+        uvm_config_db#(uvm_object_wrapper)::set(
+            this,
+            "tb.AXI_env.agent.sequencer.run_phase",
+            "default_sequence",
+            axi_stress_seq::type_id::get()
+        );
+    endfunction
 endclass

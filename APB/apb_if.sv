@@ -1,10 +1,11 @@
-interface apb_if(input clk, input rst);
-    import uvm_pkg::*;
+import uvm_pkg::*;
+`include "uvm_macros.svh"
 
-    `include "uvm_macros.svh"
-    
-    parameter int ADDR_WIDTH = 32;
-    parameter int DATA_WIDTH = 32;
+interface apb_if#(
+    parameter ADDR_WIDTH = 32,
+    parameter DATA_WIDTH = 32
+)(input clk, input rst);
+
     localparam int STRB_WIDTH = DATA_WIDTH / 8;
 
     // APB-side control signals
@@ -43,4 +44,25 @@ interface apb_if(input clk, input rst);
         input PRDATA,           
         input PREADY
     );
+
+    /*property p_apb_addr_stable;
+        @(posedge clk) disable iff (!rst)
+        (PTRANSFER && !$past(PTRANSFER)) |=> $stable({PADDR, PWRITE, PWDATA, PSTRB}) throughout (PTRANSFER);
+    endproperty
+    assert property (p_apb_addr_stable)
+    else `uvm_error("APB_IF", "Address/control/data changed while PTRANSFER was high");*/
+
+    property p_apb_pready_after_ptransfer;
+        @(posedge clk) disable iff (!rst)
+        PREADY |-> PTRANSFER;
+    endproperty
+    assert property (p_apb_pready_after_ptransfer)
+    else `uvm_error("APB_IF", "PREADY asserted before PTRANSFER");
+
+    always_comb begin
+        if (rst) begin
+            assert (!$isunknown({PTRANSFER, PWRITE, PADDR, PWDATA, PSTRB, PREADY, PRDATA}))
+                else `uvm_error("APB_IF", "Unknown value detected on APB bus");
+        end
+    end
 endinterface : apb_if

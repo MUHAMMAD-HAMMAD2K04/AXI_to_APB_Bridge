@@ -13,4 +13,5 @@ package apb_pkg;
     `include "apb_agent.sv"
     `include "apb_seqs.sv"
     `include "apb_env.sv"
+    `include "apb_subscriber.sv"
 endpackage : apb_pkg

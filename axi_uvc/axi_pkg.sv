@@ -16,4 +16,5 @@ package axi_pkg;
     `include "axi_agent.sv"
     `include "axi_env.sv"
     `include "axi_sequence.sv"
+    `include "axi_subscriber.sv"
 endpackage 

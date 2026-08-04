@@ -5,7 +5,10 @@ module hw_top;
     parameter ADDR_WIDTH = 32;
     parameter DATA_WIDTH = 32;
 
-    apb_if apb(PCLK, PRESET);
+    apb_if#(
+        .ADDR_WIDTH (ADDR_WIDTH),
+        .DATA_WIDTH (DATA_WIDTH)
+    ) apb(PCLK, PRESET);
     
     // Bridge Interface
     axi_if #(

@@ -7,7 +7,9 @@ class bridge_tb extends uvm_env;
     apb_env APB_env;
     axi_env AXI_env;  
     bridge_ref_model ref_model;
-    bridge_scoreboard      scb; 
+    bridge_scoreboard      scb;
+    axi_coverage axi_cov;
+    apb_coverage apb_cov; 
 
     function new(string name = "bridge_tb", uvm_component parent);
         super.new(name,parent);
@@ -19,6 +21,8 @@ class bridge_tb extends uvm_env;
         AXI_env = axi_env::type_id::create("AXI_env", this);
         ref_model = bridge_ref_model::type_id::create("ref_model", this);
         scb       = bridge_scoreboard::type_id::create("scb", this);
+        axi_cov = axi_coverage::type_id::create("axi_cov", this);
+        apb_cov = apb_coverage::type_id::create("apb_cov", this);
         `uvm_info(get_type_name(), "Build Phase of Testbench executed!", UVM_HIGH)
     endfunction
 
@@ -33,7 +37,10 @@ class bridge_tb extends uvm_env;
 
         // APB Monitor -> Scoreboard
         APB_env.agent.monitor.analysis_port.connect(scb.actual_fifo.analysis_export);
-    
+        
+        //Coverage connection
+        AXI_env.agent.monitor.ap.connect(axi_cov.analysis_export);
+        APB_env.agent.monitor.analysis_port.connect(apb_cov.analysis_export);
     endfunction
 
     function void start_of_simulation_phase(uvm_phase phase);

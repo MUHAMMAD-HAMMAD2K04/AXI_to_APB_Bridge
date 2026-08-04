@@ -28,5 +28,5 @@
 // +rwc
 // -gui
 
-+UVM_TESTNAME=axi_single_write_seq_test
++UVM_TESTNAME=axi_five_write_seq_test
 +UVM_VERBOSITY=UVM_FULL
