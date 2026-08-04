@@ -455,3 +455,119 @@ class axi_random_wait_state_seq extends axi_base_seq;
     endtask
 
 endclass
+// axi_regression_seq
+class axi_regression_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_regression_seq)
+
+    function new(string name="axi_regression_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        reset_seq                   rst;
+        axi_write_seq               wr;
+        axi_read_seq                rd;
+        axi_five_write_seq          wr5;
+        axi_five_read_seq           rd5;
+        axi_wait_state_seq          wait_seq;
+        axi_stress_seq              stress;
+        axi_read_after_write_seq    raw_seq;
+        axi_random_read_write_seq   rand_rw;
+        axi_multiple_write_read_seq multi_rw;
+        axi_invalid_address_seq     invalid;
+        axi_random_wait_state_seq   rand_wait;
+
+        `uvm_info(get_type_name(),
+                  "========== STARTING REGRESSION ==========",
+                  UVM_LOW)
+
+        //-------------------------------------------------
+        rst = reset_seq::type_id::create("rst");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        wr = axi_write_seq::type_id::create("wr");
+        wr.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst1");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        rd = axi_read_seq::type_id::create("rd");
+        rd.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst2");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        wr5 = axi_five_write_seq::type_id::create("wr5");
+        wr5.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst3");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        rd5 = axi_five_read_seq::type_id::create("rd5");
+        rd5.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst4");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        wait_seq = axi_wait_state_seq::type_id::create("wait_seq");
+        wait_seq.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst5");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        raw_seq = axi_read_after_write_seq::type_id::create("raw_seq");
+        raw_seq.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst6");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        rand_rw = axi_random_read_write_seq::type_id::create("rand_rw");
+        rand_rw.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst7");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        multi_rw = axi_multiple_write_read_seq::type_id::create("multi_rw");
+        multi_rw.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst8");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        invalid = axi_invalid_address_seq::type_id::create("invalid");
+        invalid.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst9");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        rand_wait = axi_random_wait_state_seq::type_id::create("rand_wait");
+        rand_wait.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst10");
+        rst.start(m_sequencer);
+
+        //-------------------------------------------------
+        stress = axi_stress_seq::type_id::create("stress");
+        stress.start(m_sequencer);
+
+        rst = reset_seq::type_id::create("rst11");
+        rst.start(m_sequencer);
+
+        `uvm_info(get_type_name(),
+                  "========== REGRESSION COMPLETED ==========",
+                  UVM_LOW)
+
+    endtask
+
+endclass
