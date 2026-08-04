@@ -32,18 +32,34 @@ class bridge_tb extends uvm_env;
         // AXI Monitor -> Reference Model
         AXI_env.agent.monitor.ap.connect(ref_model.axi_imp);
 
-        // Reference Model -> Scoreboard
-        ref_model.expected_apb_port.connect(scb.expected_fifo.analysis_export);
+        // APB Monitor -> Reference Model
+        APB_env.agent.monitor.analysis_port.connect(ref_model.apb_imp);
 
-        // APB Monitor -> Scoreboard
-        APB_env.agent.monitor.analysis_port.connect(scb.actual_fifo.analysis_export);
+    // Reference Model -> Scoreboard
+
+        //Expected APB transactions
+        ref_model.expected_apb_port.connect(scb.expected_apb_fifo.analysis_export);
         
+        // Expected AXI transactions
+        ref_model.expected_axi_port.connect(scb.expected_axi_fifo.analysis_export);
+
+    // Actual Monitor -> Scoreboard
+
+        //  Actual APB transactions
+        APB_env.agent.monitor.analysis_port.connect(scb.actual_apb_fifo.analysis_export);
+        
+        //  Actual AXI transactions
+        AXI_env.agent.monitor.ap.connect(scb.actual_axi_fifo.analysis_export);
+        
+
         //Coverage connection
         AXI_env.agent.monitor.ap.connect(axi_cov.analysis_export);
         APB_env.agent.monitor.analysis_port.connect(apb_cov.analysis_export);
     endfunction
 
+    // Start of Simulation
     function void start_of_simulation_phase(uvm_phase phase);
         `uvm_info(get_type_name(),"Running Simulation ...", UVM_HIGH)
     endfunction
+    
 endclass
