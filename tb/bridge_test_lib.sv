@@ -301,3 +301,59 @@ function void build_phase(uvm_phase phase);
 endfunction
 
 endclass
+// Invalid Address Test
+class axi_invalid_address_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_invalid_address_seq_test)
+
+    function new(string name = "axi_invalid_address_seq_test",
+                 uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+
+        super.build_phase(phase);
+
+        uvm_config_db#(int)::set(
+            this,
+            "*agent.driver*",
+            "wait_cycles",
+            3
+        );
+
+        uvm_config_db#(uvm_object_wrapper)::set(
+            this,
+            "tb.AXI_env.agent.sequencer.run_phase",
+            "default_sequence",
+            axi_invalid_address_seq::type_id::get()
+        );
+
+    endfunction
+
+endclass
+
+//axi_random_wait_state_seq_test
+class axi_random_wait_state_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_random_wait_state_seq_test)
+
+    function new(string name="axi_random_wait_state_seq_test",
+                 uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+
+        super.build_phase(phase);
+
+        uvm_config_db#(uvm_object_wrapper)::set(
+            this,
+            "tb.AXI_env.agent.sequencer.run_phase",
+            "default_sequence",
+            axi_random_wait_state_seq::type_id::get()
+        );
+
+    endfunction
+
+endclass
