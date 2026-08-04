@@ -22,9 +22,6 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
         rand_wait_cycles inside {[0:5]};
     }
 
-    // Error Injection
-    bit enable_pslverr = 0;
-
     // Constructor
     function new(string name="apb_driver",
                  uvm_component parent);
@@ -46,9 +43,6 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
             random_wait = 0;
         else
             random_wait = 1;
-
-        void'(uvm_config_db#(bit)::get(
-                this,"","enable_pslverr",enable_pslverr));
 
     endfunction
 
