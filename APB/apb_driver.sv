@@ -22,11 +22,9 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
         rand_wait_cycles inside {[0:5]};
     }
 
-     
     // Error Injection
     bit enable_pslverr = 0;
 
-     
     // Constructor
     function new(string name="apb_driver",
                  uvm_component parent);
