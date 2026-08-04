@@ -7,6 +7,7 @@ module top;
 
     `include "bridge_ref_model.sv"
     `include "bridge_scoreboard.sv"
+     `include "bridge_subscriber.sv"
     `include "bridge_tb.sv"
     `include "bridge_test_lib.sv"
 

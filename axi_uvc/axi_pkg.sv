@@ -14,7 +14,8 @@ package axi_pkg;
     `include "axi_driver.sv"
     `include "axi_monitor.sv"
     `include "axi_agent.sv"
+    `include "axi_subscriber.sv"
     `include "axi_env.sv"
     `include "axi_sequence.sv"
-    `include "axi_subscriber.sv"
+
 endpackage 
