@@ -258,6 +258,123 @@ class axi_stress_seq extends axi_base_seq;
             finish_item(req);
 
         end
+    endtask
+endclass
+
+// axi_read_after_write_seq
+class axi_read_after_write_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_read_after_write_seq)
+
+    function new(string name = "axi_read_after_write_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        axi_transaction tr;
+
+        `uvm_info(get_type_name(),"Starting Read-After-Write Sequence...", UVM_LOW)
+
+        `uvm_do_with(tr,{
+            write == 1'b1;
+            addr  == 32'h0000_1000;
+            data  == 32'h1234_ABCD;
+            strb  == 4'b1111;
+        })
+
+        `uvm_info(get_type_name(), $sformatf("WRITE : ADDR=0x%08h DATA=0x%08h",tr.addr, tr.data), UVM_MEDIUM)
+
+        `uvm_do_with(tr,{
+            write == 1'b0;
+            addr  == 32'h0000_1000;
+        })
+
+        `uvm_info(get_type_name(), $sformatf("READ  : ADDR=0x%08h",tr.addr), UVM_MEDIUM)
+
+    endtask
+endclass
+
+//axi_random_read_write_seq
+class axi_random_read_write_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_random_read_write_seq)
+
+    function new(string name = "axi_random_read_write_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        axi_transaction tr;
+
+        `uvm_info(get_type_name(), "Starting Random Read/Write Sequence...", UVM_LOW)
+
+        // Generate 20 random transactions
+        repeat (20) begin
+
+            `uvm_do_with(tr,{
+                write dist {1 := 50, 0 := 50};
+                addr inside {[32'h0000_0000 : 32'h0000_FFFF]};
+                strb inside {4'b0001,
+                             4'b0011,
+                             4'b0111,
+                             4'b1111};
+            })
+
+            if (tr.write)
+                `uvm_info(get_type_name(), $sformatf("WRITE : ADDR=0x%08h DATA=0x%08h STRB=%b",tr.addr, tr.data, tr.strb),UVM_MEDIUM)
+            else
+                `uvm_info(get_type_name(),   $sformatf("READ  : ADDR=0x%08h", tr.addr), UVM_MEDIUM)
+        end
+
+        `uvm_info(get_type_name(), "Random Read/Write Sequence Completed", UVM_LOW)
+
+    endtask
+
+endclass
+
+// axi_multiple_write_read_seq
+class axi_multiple_write_read_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_multiple_write_read_seq)
+
+    bit [31:0] addr_q[$];
+    bit [31:0] data_q[$];
+
+    function new(string name = "axi_multiple_write_read_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        `uvm_info(get_type_name(),  "Starting Multiple Write-Read Sequence",  UVM_LOW)
+
+        repeat (5) begin
+
+            `uvm_do_with(req,{
+                write == 1'b1;
+                addr inside {[32'h0000_1000 : 32'h0000_FFFF]};
+                strb == 4'b1111;
+            })
+
+            addr_q.push_back(req.addr);
+            data_q.push_back(req.data);
+
+            `uvm_info(get_type_name(), $sformatf("WRITE : ADDR=0x%08h DATA=0x%08h",  req.addr, req.data), UVM_MEDIUM)
+
+        end
+
+        for (int i = 0; i < addr_q.size(); i++) begin
+
+            `uvm_do_with(req,{
+                write == 1'b0;
+                addr  == local::addr_q[i];
+            })
+
+            `uvm_info(get_type_name(), $sformatf("READ  : ADDR=0x%08h",  req.addr), UVM_MEDIUM)
+        end
+        `uvm_info(get_type_name(),  "Multiple Write-Read Sequence Completed", UVM_LOW)
 
     endtask
 
