@@ -357,3 +357,28 @@ class axi_random_wait_state_seq_test extends axi_base_test;
     endfunction
 
 endclass
+
+//axi_regression_test
+class axi_regression_test extends axi_base_test;
+
+    `uvm_component_utils(axi_regression_test)
+
+    function new(string name="axi_regression_test",
+                 uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+
+        super.build_phase(phase);
+
+        uvm_config_db#(uvm_object_wrapper)::set(
+            this,
+            "tb.AXI_env.agent.sequencer.run_phase",
+            "default_sequence",
+            axi_regression_seq::type_id::get()
+        );
+
+    endfunction
+
+endclass
