@@ -379,3 +379,78 @@ class axi_multiple_write_read_seq extends axi_base_seq;
     endtask
 
 endclass
+// Invalid Address Sequence
+class axi_invalid_address_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_invalid_address_seq)
+
+    function new(string name = "axi_invalid_address_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        `uvm_info(get_type_name(), "Starting Invalid Address Test", UVM_LOW)
+
+        // Invalid Write
+        `uvm_do_with(req,{
+            write == 1'b1;
+            addr  == 32'hFFFF_0000;   // Invalid Address
+            strb  == 4'b1111;
+        })
+
+        `uvm_info(get_type_name(), $sformatf("INVALID WRITE : ADDR=0x%08h DATA=0x%08h", req.addr, req.data),UVM_MEDIUM)
+
+        // Invalid Read
+        `uvm_do_with(req,{
+            write == 1'b0;
+            addr  == 32'hFFFF_0000;   // Same Invalid Address
+        })
+
+        `uvm_info(get_type_name(),  $sformatf("INVALID READ  : ADDR=0x%08h",  req.addr),  UVM_MEDIUM)
+
+        `uvm_info(get_type_name(),  "Invalid Address Test Completed",  UVM_LOW)
+
+    endtask
+
+endclass
+
+//axi_random_wait_state_seq
+class axi_random_wait_state_seq extends axi_base_seq;
+
+    `uvm_object_utils(axi_random_wait_state_seq)
+
+    function new(string name="axi_random_wait_state_seq");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+
+        `uvm_info(get_type_name(),  "Starting Random Wait-State Test", UVM_LOW)
+
+        repeat (20) begin
+
+            `uvm_do_with(req,{
+                write dist {1:=50,0:=50};
+
+                addr inside {[32'h0000_0000:32'h0000_FFFF]};
+
+                if(write)
+                    strb inside {4'b0001,
+                                 4'b0011,
+                                 4'b0111,
+                                 4'b1111};
+            })
+
+            if(req.write)
+                `uvm_info(get_type_name(), $sformatf("WRITE : ADDR=0x%08h DATA=0x%08h", req.addr,req.data),UVM_MEDIUM)
+            else
+                `uvm_info(get_type_name(), $sformatf("READ  : ADDR=0x%08h", req.addr),UVM_MEDIUM);
+
+        end
+
+        `uvm_info(get_type_name(),  "Random Wait-State Test Completed",  UVM_LOW)
+
+    endtask
+
+endclass
