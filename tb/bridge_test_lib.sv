@@ -202,3 +202,102 @@ class stress_test extends axi_base_test;
         );
     endfunction
 endclass
+
+// axi_read_after_write_seq Test
+class axi_read_after_write_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_read_after_write_seq_test)
+
+
+    function new(string name="axi_read_after_write_seq_test",
+                 uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+function void build_phase(uvm_phase phase);
+
+    super.build_phase(phase);
+
+    uvm_config_db#(int)::set(
+        this,
+        "*agent.driver*",
+        "wait_cycles",
+        3
+    );
+
+    uvm_config_db#(uvm_object_wrapper)::set(
+        this,
+        "tb.AXI_env.agent.sequencer.run_phase",
+        "default_sequence",
+        axi_read_after_write_seq::type_id::get()
+        );
+
+endfunction
+
+endclass
+
+// axi_random_read_write_seq Test
+class axi_random_read_write_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_random_read_write_seq_test)
+
+
+    function new(string name="axi_random_read_write_seq_test",
+                 uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+function void build_phase(uvm_phase phase);
+
+    super.build_phase(phase);
+
+    uvm_config_db#(int)::set(
+        this,
+        "*agent.driver*",
+        "wait_cycles",
+        3
+    );
+
+    uvm_config_db#(uvm_object_wrapper)::set(
+        this,
+        "tb.AXI_env.agent.sequencer.run_phase",
+        "default_sequence",
+        axi_random_read_write_seq::type_id::get()
+        );
+
+endfunction
+
+endclass
+
+// axi_multiple_write_read_seq Test
+class axi_multiple_write_read_seq_test extends axi_base_test;
+
+    `uvm_component_utils(axi_multiple_write_read_seq_test)
+
+
+    function new(string name="axi_multiple_write_read_seq_test",
+                 uvm_component parent);
+        super.new(name,parent);
+    endfunction
+
+function void build_phase(uvm_phase phase);
+
+    super.build_phase(phase);
+
+    uvm_config_db#(int)::set(
+        this,
+        "*agent.driver*",
+        "wait_cycles",
+        3
+    );
+
+    uvm_config_db#(uvm_object_wrapper)::set(
+        this,
+        "tb.AXI_env.agent.sequencer.run_phase",
+        "default_sequence",
+        axi_multiple_write_read_seq::type_id::get()
+        );
+
+endfunction
+
+endclass
