@@ -2,11 +2,21 @@ class bridge_ref_model extends uvm_component;
     
     `uvm_component_utils(bridge_ref_model)
 
+    //Imp through decl bcz of multiple ports
+    `uvm_analysis_imp_decl(_axi)
+    `uvm_analysis_imp_decl(_apb)
+
     // Receive AXI transactions
-    uvm_analysis_imp #(axi_transaction, bridge_ref_model) axi_imp;
+    uvm_analysis_imp_axi #(axi_transaction, bridge_ref_model) axi_imp;
+
+    // Receive APB transactions
+    uvm_analysis_imp_apb #(axi_to_apb_packet, bridge_ref_model) apb_imp;
 
     // Send expected APB transactions
     uvm_analysis_port #(axi_to_apb_packet) expected_apb_port;
+
+    // Send expected AXI transaction
+    uvm_analysis_port #(axi_transaction) expected_axi_port;
 
     // Reference Memory Model
     bit [31:0] mem [bit [31:0]];
@@ -15,85 +25,85 @@ class bridge_ref_model extends uvm_component;
         super .new(name,parent);
     // Ports Creation
         axi_imp = new("axi_imp", this);
+        apb_imp = new("apb_imp", this);
         expected_apb_port = new("expected_apb_port", this);
+        expected_axi_port = new("expected_axi_port", this);
     endfunction //new()
 
-         
-    // Receive AXI Transaction
-    virtual function void write(axi_transaction axi_tr);
+
+    //AXI -> APB Prediction
+     function void write_axi(axi_transaction axi_tr);
 
         axi_to_apb_packet apb_exp;
 
         apb_exp = axi_to_apb_packet::type_id::create("apb_exp");
 
-        // Common Fields
         apb_exp.addr  = axi_tr.addr;
         apb_exp.write = axi_tr.write;
-         
-        // WRITE Transaction
+        apb_exp.strb  = axi_tr.strb;
+    
+        // WRITE
         if(axi_tr.write) begin
 
-            apb_exp.wdata = axi_tr.data;
-            apb_exp.strb  = axi_tr.strb;
-
-            // Update reference memory
             mem[axi_tr.addr] = axi_tr.data;
-
-            // `uvm_info(get_type_name(),
-            //     $sformatf(
-            //     "\nREFERENCE MODEL (WRITE)"
-            //     "\nADDR  = %08h"
-            //     "\nWDATA = %08h"
-            //     "\nSTRB  = %0h",
-            //     apb_exp.addr,
-            //     apb_exp.wdata,
-            //     apb_exp.strb),
-            //     UVM_MEDIUM)
-
-            `uvm_info(get_type_name(),
-                $sformatf("\nREFERENCE MODEL (WRITE)\nADDR=%08h\nWDATA=%08h\nSTRB=%0h",
-                        apb_exp.addr,
-                        apb_exp.wdata,
-                        apb_exp.strb),
-                UVM_MEDIUM)
+            apb_exp.wdata = axi_tr.data;
 
         end
 
-        // READ Transaction
+        // READ
         else begin
-
-            apb_exp.wdata = '0;
-            apb_exp.strb  = '0;
-
-            // Predict expected read data
             if(mem.exists(axi_tr.addr))
                 apb_exp.rdata = mem[axi_tr.addr];
             else
-                apb_exp.rdata = '0;
+                apb_exp.rdata = 32'h0;
+        end
 
-            // `uvm_info(get_type_name(),
-            //     $sformatf(
-            //     "\nREFERENCE MODEL (READ)"
-            //     "\nADDR  = %08h"
-            //     "\nExpected RDATA = %08h",
-            //     apb_exp.addr,
-            //     apb_exp.rdata),
-            //     UVM_MEDIUM)
+        apb_exp.ready = 1;
 
-            `uvm_info(get_type_name(),
-                $sformatf("\nREFERENCE MODEL (READ)\nADDR=%08h\nExpected RDATA=%08h",
-                        apb_exp.addr,
-                        apb_exp.rdata),
-                UVM_MEDIUM)
+        expected_apb_port.write(apb_exp);
+
+        `uvm_info(get_type_name(),
+        $sformatf("AXI->APB Prediction ADDR=%08h",
+                  axi_tr.addr),
+                  UVM_MEDIUM)
+    endfunction
+
+    // APB -> AXI Prediction
+    function void write_apb(axi_to_apb_packet apb_tr);
+
+        axi_transaction axi_exp;
+
+        axi_exp = axi_transaction::type_id::create("axi_exp");
+
+        axi_exp.addr  = apb_tr.addr;
+        axi_exp.write = apb_tr.write;
+         
+        // WRITE
+        if(apb_tr.write) begin
+
+            mem[apb_tr.addr] = apb_tr.wdata;
+            axi_exp.data = apb_tr.wdata;
+            axi_exp.strb = apb_tr.strb;
 
         end
          
-        // APB Transfer Expected Complete
-        apb_exp.ready = 1'b1;
-         
-        // Send Expected Packet
-        expected_apb_port.write(apb_exp);
+        // READ
+        else begin
+
+            if(mem.exists(apb_tr.addr))
+                axi_exp.data = mem[apb_tr.addr];
+            else
+                axi_exp.data = 32'h0;
+                axi_exp.strb = 4'h0;
+        end
+
+        expected_axi_port.write(axi_exp);
+
+        `uvm_info(get_type_name(),
+        $sformatf("APB->AXI Prediction ADDR=%08h",
+                  apb_tr.addr),
+                  UVM_MEDIUM)
 
     endfunction
 
-endclass //bridge_ref_model extends uvm_component;
+endclass //bridge_ref_model extends uvm_component
