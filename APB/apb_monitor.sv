@@ -58,7 +58,7 @@ class apb_monitor extends uvm_monitor;
                                     pkt.write,
                                     pkt.wdata,
                                     pkt.strb),
-                          UVM_HIGH)
+                          UVM_DEBUG)
 
                  
                 // Wait until APB transfer completes     
@@ -73,8 +73,6 @@ class apb_monitor extends uvm_monitor;
                     pkt.rdata = '0;
 
                 num_pkt_col++;
-
-                analysis_port.write(pkt);
 
                 `uvm_info(get_type_name(),
                           $sformatf(
@@ -95,7 +93,11 @@ class apb_monitor extends uvm_monitor;
                           pkt.strb,
                           pkt.ready,
                           num_pkt_col),
-                          UVM_MEDIUM);
+                          UVM_DEBUG);
+
+                // Publish only after the complete APB transaction has been
+                // printed, keeping scoreboard messages after bus messages.
+                analysis_port.write(pkt);
 
             end
 

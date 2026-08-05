@@ -3,6 +3,7 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
     `uvm_component_utils(apb_driver)
 
     virtual apb_if.driver_mp vif;
+    uvm_analysis_port #(axi_to_apb_packet) analysis_port;
 
     // Simple APB Slave Memory
     bit [31:0] mem [bit [31:0]];
@@ -26,6 +27,7 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
     function new(string name="apb_driver",
                  uvm_component parent);
         super.new(name,parent);
+        analysis_port = new("analysis_port", this);
     endfunction
 
      
@@ -54,6 +56,7 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
         bit [31:0] addr;
         bit [31:0] wdata;
         bit [3:0]  strb;
+        axi_to_apb_packet driven_pkt;
 
         reset_signals();
 
@@ -62,7 +65,10 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
         forever begin
              
             // Wait for Setup Phase
-            @(posedge vif.clk);
+            // Sample the DUT during the APB setup half-cycle.  For reads,
+            // drive PRDATA before the next rising edge so it is already
+            // stable when the bridge samples it.
+            @(negedge vif.clk);
 
             if(!vif.PTRANSFER)
                 continue;
@@ -73,6 +79,13 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
             addr  = vif.PADDR;
             wdata = vif.PWDATA;
             strb  = vif.PSTRB;
+
+            if (!write) begin
+                if (mem.exists(addr))
+                    vif.PRDATA <= mem[addr];
+                else
+                    vif.PRDATA <= 32'h0;
+            end
 
             `uvm_info(get_type_name(),
             $sformatf(
@@ -87,7 +100,7 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
              addr,
              wdata,
              strb),
-             UVM_MEDIUM)
+             UVM_DEBUG)
 
              
             // ACCESS PHASE
@@ -137,7 +150,7 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
                 "WRITE : MEM[%08h] = %08h",
                 addr,
                 mem[addr]),
-                UVM_HIGH)
+                UVM_DEBUG)
 
             end
 
@@ -158,7 +171,7 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
                 "READ : MEM[%08h] -> %08h",
                 addr,
                 mem.exists(addr) ? mem[addr] : 32'h0),
-                UVM_HIGH)
+                UVM_DEBUG)
 
             end
 
@@ -173,7 +186,17 @@ class apb_driver extends uvm_driver #(axi_to_apb_packet);
 
             `uvm_info(get_type_name(),
                 "APB Transfer Completed",
-                UVM_MEDIUM)
+                UVM_DEBUG)
+
+            driven_pkt = axi_to_apb_packet::type_id::create("driven_pkt");
+            driven_pkt.write = write;
+            driven_pkt.addr  = addr;
+            driven_pkt.wdata = wdata;
+            driven_pkt.strb  = strb;
+            driven_pkt.ready = 1'b1;
+            if (!write)
+                driven_pkt.rdata = mem.exists(addr) ? mem[addr] : 32'h0;
+            analysis_port.write(driven_pkt);
 
         end
 
