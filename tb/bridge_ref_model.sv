@@ -65,7 +65,7 @@ class bridge_ref_model extends uvm_component;
         `uvm_info(get_type_name(),
         $sformatf("AXI->APB Prediction ADDR=%08h",
                   axi_tr.addr),
-                  UVM_MEDIUM)
+                  UVM_DEBUG)
     endfunction
 
     // APB -> AXI Prediction
@@ -102,7 +102,7 @@ class bridge_ref_model extends uvm_component;
         `uvm_info(get_type_name(),
         $sformatf("APB->AXI Prediction ADDR=%08h",
                   apb_tr.addr),
-                  UVM_MEDIUM)
+                  UVM_DEBUG)
 
     endfunction
 

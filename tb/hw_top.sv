@@ -63,5 +63,15 @@ module hw_top;
         PRESET = 0;
         repeat(5) @(posedge PCLK);
         PRESET = 1;
+
+        forever begin
+            @(posedge PCLK);
+            if (axi_if_inst.reset_request) begin
+                PRESET = 0;
+                while (axi_if_inst.reset_request)
+                    @(posedge PCLK);
+                PRESET = 1;
+            end
+        end
     end
 endmodule

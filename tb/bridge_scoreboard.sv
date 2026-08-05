@@ -10,6 +10,11 @@ class bridge_scoreboard extends uvm_scoreboard;
     // AXI Side Analysis FIFOs
     uvm_tlm_analysis_fifo #(axi_transaction) expected_axi_fifo;
     uvm_tlm_analysis_fifo #(axi_transaction) actual_axi_fifo;
+
+    // Transactions captured directly at each driver.  These allow one
+    // deterministic, ordered log block per completed bridge transfer.
+    uvm_tlm_analysis_fifo #(axi_transaction) axi_driver_fifo;
+    uvm_tlm_analysis_fifo #(axi_to_apb_packet) apb_driver_fifo;
      
     // Statistics
     int total_apb;
@@ -19,6 +24,7 @@ class bridge_scoreboard extends uvm_scoreboard;
     int total_axi;
     int pass_axi;
     int fail_axi;;
+    int transaction_count;
      
     // Constructor
     function new(string name="bridge_scoreboard",
@@ -36,17 +42,63 @@ class bridge_scoreboard extends uvm_scoreboard;
 
     expected_axi_fifo = new("expected_axi_fifo", this);
     actual_axi_fifo   = new("actual_axi_fifo", this);
+    axi_driver_fifo   = new("axi_driver_fifo", this);
+    apb_driver_fifo   = new("apb_driver_fifo", this);
 
     endfunction
 
     // Run Phase
     task run_phase(uvm_phase phase);
 
-        fork
-            compare_apb();
-            compare_axi();
-        join
+        compare_ordered_transactions();
 
+    endtask
+
+    task compare_ordered_transactions();
+        axi_transaction   drv_axi;
+        axi_transaction   act_axi;
+        axi_transaction   exp_axi;
+        axi_to_apb_packet drv_apb;
+        axi_to_apb_packet act_apb;
+        axi_to_apb_packet exp_apb;
+
+        forever begin
+            axi_driver_fifo.get(drv_axi);
+            actual_axi_fifo.get(act_axi);
+            apb_driver_fifo.get(drv_apb);
+            actual_apb_fifo.get(act_apb);
+            expected_apb_fifo.get(exp_apb);
+            expected_axi_fifo.get(exp_axi);
+
+            transaction_count++;
+
+            `uvm_info("ORDERED_TRANSACTION",
+                $sformatf(
+                "\n============================================================\
+                 \n TRANSACTION %0d\
+                 \n------------------------------------------------------------\
+                 \n [1] AXI DRIVER\n%s\
+                 \n [2] AXI MONITOR\n%s\
+                 \n [3] APB DRIVER\n%s\
+                 \n [4] APB MONITOR\n%s\
+                 \n============================================================",
+                 transaction_count,
+                 drv_axi.sprint(), act_axi.sprint(),
+                 drv_apb.sprint(), act_apb.sprint()),
+                 UVM_MEDIUM)
+
+            total_apb++;
+            if (compare_apb_packet(exp_apb, act_apb))
+                pass_apb++;
+            else
+                fail_apb++;
+
+            total_axi++;
+            if (compare_axi_packet(exp_axi, act_axi))
+                pass_axi++;
+            else
+                fail_axi++;
+        end
     endtask
 
          
@@ -161,7 +213,7 @@ class bridge_scoreboard extends uvm_scoreboard;
         if(match)
             `uvm_info(get_type_name(),
             $sformatf("APB Compare PASS Addr=%08h",exp_pkt.addr),
-            UVM_LOW)
+            UVM_DEBUG)
         else
             `uvm_error(get_type_name(),"APB Compare FAILED")
 
@@ -225,7 +277,7 @@ class bridge_scoreboard extends uvm_scoreboard;
         if(match)
             `uvm_info(get_type_name(),
             $sformatf("AXI Compare PASS Addr=%08h",exp_tr.addr),
-            UVM_LOW)
+            UVM_DEBUG)
         else
             `uvm_error(get_type_name(),"AXI Compare FAILED")
 

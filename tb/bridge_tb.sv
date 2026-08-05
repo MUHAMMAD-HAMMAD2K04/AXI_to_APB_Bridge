@@ -43,6 +43,12 @@ class bridge_tb extends uvm_env;
 
     // Actual Monitor -> Scoreboard
 
+        // Driver-side copies used by the ordered transaction logger
+        AXI_env.agent.driver.analysis_port.connect(
+            scb.axi_driver_fifo.analysis_export);
+        APB_env.agent.driver.analysis_port.connect(
+            scb.apb_driver_fifo.analysis_export);
+
         //  Actual APB transactions
         APB_env.agent.monitor.analysis_port.connect(scb.actual_apb_fifo.analysis_export);
         

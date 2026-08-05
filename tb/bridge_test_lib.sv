@@ -358,7 +358,105 @@ class axi_random_wait_state_seq_test extends axi_base_test;
 
 endclass
 
-// 12. axi_regression_test
+// FIFO Full Test
+class axi_fifo_full_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_fifo_full_seq_test)
+    function new(string name="axi_fifo_full_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_fifo_full_seq::type_id::get());
+    endfunction
+endclass
+
+// FIFO Empty Test
+class axi_fifo_empty_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_fifo_empty_seq_test)
+    function new(string name="axi_fifo_empty_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_fifo_empty_seq::type_id::get());
+    endfunction
+endclass
+
+// Multiple Write Test (named alias for the existing five-write sequence)
+class axi_multiple_write_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_multiple_write_seq_test)
+    function new(string name="axi_multiple_write_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_five_write_seq::type_id::get());
+    endfunction
+endclass
+
+// Multiple Read Test
+class axi_multiple_read_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_multiple_read_seq_test)
+    function new(string name="axi_multiple_read_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_five_read_seq::type_id::get());
+    endfunction
+endclass
+
+// Reset During Transaction Test
+class axi_reset_during_transaction_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_reset_during_transaction_seq_test)
+    function new(string name="axi_reset_during_transaction_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_reset_during_transaction_seq::type_id::get());
+    endfunction
+endclass
+
+// Random Address Test
+class axi_random_address_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_random_address_seq_test)
+    function new(string name="axi_random_address_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_random_address_seq::type_id::get());
+    endfunction
+endclass
+
+// Random FIFO Stress Test
+class axi_random_fifo_stress_seq_test extends axi_base_test;
+    `uvm_component_utils(axi_random_fifo_stress_seq_test)
+    function new(string name="axi_random_fifo_stress_seq_test", uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        uvm_config_db#(uvm_object_wrapper)::set(this,
+            "tb.AXI_env.agent.sequencer.run_phase", "default_sequence",
+            axi_random_fifo_stress_seq::type_id::get());
+    endfunction
+endclass
+
+// Regression Test
 class axi_regression_test extends axi_base_test;
 
     `uvm_component_utils(axi_regression_test)
