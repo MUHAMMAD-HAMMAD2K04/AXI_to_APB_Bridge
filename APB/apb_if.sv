@@ -45,13 +45,6 @@ interface apb_if#(
         input PREADY
     );
 
-    /*property p_apb_addr_stable;
-        @(posedge clk) disable iff (!rst)
-        (PTRANSFER && !$past(PTRANSFER)) |=> $stable({PADDR, PWRITE, PWDATA, PSTRB}) throughout (PTRANSFER);
-    endproperty
-    assert property (p_apb_addr_stable)
-    else `uvm_error("APB_IF", "Address/control/data changed while PTRANSFER was high");*/
-
     property p_apb_pready_after_ptransfer;
         @(posedge clk) disable iff (!rst)
         PREADY |-> PTRANSFER;

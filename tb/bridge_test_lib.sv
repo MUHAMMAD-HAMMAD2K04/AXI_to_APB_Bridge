@@ -27,7 +27,7 @@ class axi_base_test extends uvm_test;
 endclass
 
 
-// Reset Sequence Test
+// 1. Reset Sequence Test
 class reset_seq_test extends axi_base_test;
 
     `uvm_component_utils(reset_seq_test)
@@ -54,7 +54,7 @@ class reset_seq_test extends axi_base_test;
 endclass
 
 
-// Single AXI Write Test
+// 2.  Single AXI Write Test
 class axi_write_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_write_seq_test)
@@ -82,7 +82,7 @@ class axi_write_seq_test extends axi_base_test;
 endclass
 
  
-// AXI Read Test
+// 3. AXI Read Test
 class axi_read_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_read_seq_test)
@@ -109,7 +109,7 @@ class axi_read_seq_test extends axi_base_test;
 endclass
 
 
-// Five Write Sequence Test
+// 4. Five Write Sequence Test
 class axi_five_write_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_five_write_seq_test)
@@ -136,7 +136,7 @@ class axi_five_write_seq_test extends axi_base_test;
 
 endclass
 
-// Wait State Sequence Test
+// 5. Wait State Sequence Test
 class wait_state_test extends axi_base_test;
 
     `uvm_component_utils(wait_state_test)
@@ -168,7 +168,7 @@ class wait_state_test extends axi_base_test;
 endclass
 
 
-// Stress Sequence Test
+// 6. Stress Sequence Test
 class stress_test extends axi_base_test;
 
     `uvm_component_utils(stress_test)
@@ -203,7 +203,7 @@ class stress_test extends axi_base_test;
     endfunction
 endclass
 
-// axi_read_after_write_seq Test
+// 7. axi_read_after_write_seq Test
 class axi_read_after_write_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_read_after_write_seq_test)
@@ -236,7 +236,7 @@ endfunction
 
 endclass
 
-// axi_random_read_write_seq Test
+// 8. axi_random_read_write_seq Test
 class axi_random_read_write_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_random_read_write_seq_test)
@@ -269,7 +269,7 @@ endfunction
 
 endclass
 
-// axi_multiple_write_read_seq Test
+// 9. axi_multiple_write_read_seq Test
 class axi_multiple_write_read_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_multiple_write_read_seq_test)
@@ -301,7 +301,7 @@ function void build_phase(uvm_phase phase);
 endfunction
 
 endclass
-// Invalid Address Test
+// 10. Invalid Address Test
 class axi_invalid_address_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_invalid_address_seq_test)
@@ -333,7 +333,7 @@ class axi_invalid_address_seq_test extends axi_base_test;
 
 endclass
 
-//axi_random_wait_state_seq_test
+// 11. axi_random_wait_state_seq_test
 class axi_random_wait_state_seq_test extends axi_base_test;
 
     `uvm_component_utils(axi_random_wait_state_seq_test)
@@ -358,7 +358,7 @@ class axi_random_wait_state_seq_test extends axi_base_test;
 
 endclass
 
-//axi_regression_test
+// 12. axi_regression_test
 class axi_regression_test extends axi_base_test;
 
     `uvm_component_utils(axi_regression_test)
