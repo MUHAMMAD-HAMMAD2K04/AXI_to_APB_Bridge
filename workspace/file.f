@@ -28,5 +28,5 @@
 // +rwc
 // -gui
 
-+UVM_TESTNAME=stress_test
++UVM_TESTNAME=axi_regression_test
 +UVM_VERBOSITY=UVM_FULL

@@ -57,5 +57,4 @@ class bridge_tb extends uvm_env;
     function void start_of_simulation_phase(uvm_phase phase);
         `uvm_info(get_type_name(),"Running Simulation ...", UVM_HIGH)
     endfunction
-    
 endclass

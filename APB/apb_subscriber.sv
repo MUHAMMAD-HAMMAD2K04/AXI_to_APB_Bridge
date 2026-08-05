@@ -51,9 +51,9 @@ class apb_coverage extends uvm_subscriber #(axi_to_apb_packet);
             ignore_bins read_strb = binsof(type_cp.read);
         }
 
-        cross type_cp, ready_cp;
+        cross addr_cp, rdata_cp;
 
-        cross addr_cp, ready_cp;
+        cross addr_cp, wdata_cp;
     endgroup
 
     function new(string name = "apb_coverage", uvm_component parent);
