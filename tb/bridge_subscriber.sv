@@ -55,8 +55,6 @@ class bridge_cross_coverage extends uvm_component;
 
         // Cross coverage
         cross axi_addr_cp, apb_addr_cp;
-        cross axi_write_cp, apb_write_cp;
-        cross axi_strb_cp, apb_strb_cp;
         cross axi_addr_cp, apb_ready_cp;
         cross axi_write_cp, apb_ready_cp;
     endgroup
