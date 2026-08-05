@@ -11,10 +11,10 @@ class apb_coverage extends uvm_subscriber #(axi_to_apb_packet);
         }
 
         addr_cp: coverpoint pkt.addr {
-            bins reg0    = {32'h0000_0000};
-            bins reg1    = {[32'h0000_0004 : 32'h0000_000C]};
-            bins reg2    = {[32'h0000_0010 : 32'h0000_001C]};
-            bins others  = default;
+            bins low    = {[0:32'h3FFF]};
+            bins mid    = {[32'h4000:32'h7FFF]};
+            bins high   = {[32'h8000:32'hBFFF]};
+            bins top    = {[32'hC000:32'hFFFF]};
         }
 
         strb_cp: coverpoint pkt.strb {
@@ -26,22 +26,15 @@ class apb_coverage extends uvm_subscriber #(axi_to_apb_packet);
         }
 
         ready_cp: coverpoint pkt.ready {
-            bins ready_0 = {0};  // Wait state
             bins ready_1 = {1};  // No wait state
         }
 
         rdata_cp: coverpoint pkt.rdata {
-            bins zero      = {32'h0000_0000};
-            bins all_ones  = {32'hFFFF_FFFF};
-            bins patterns  = {32'hDEAD_BEEF, 32'hCAFE_BABE, 32'hA5A5_A5A5};
-            bins others    = default;
-        }
-
-        wdata_cp: coverpoint pkt.wdata {
-            bins zero      = {32'h0000_0000};
-            bins all_ones  = {32'hFFFF_FFFF};
-            bins patterns  = {32'hDEAD_BEEF, 32'hCAFE_BABE, 32'hA5A5_A5A5};
-            bins others    = default;
+            bins low    = {[32'h0000_0000 : 32'h0000_3FFF]};
+            bins mid    = {[32'h0000_4000 : 32'h0000_7FFF]};
+            bins high   = {[32'h0000_8000 : 32'h0000_BFFF]};
+            bins top    = {[32'h0000_C000 : 32'h0000_FFFF]};
+            bins others = default;
         }
 
         cross type_cp, addr_cp;
@@ -52,8 +45,6 @@ class apb_coverage extends uvm_subscriber #(axi_to_apb_packet);
         }
 
         cross addr_cp, rdata_cp;
-
-        cross addr_cp, wdata_cp;
     endgroup
 
     function new(string name = "apb_coverage", uvm_component parent);

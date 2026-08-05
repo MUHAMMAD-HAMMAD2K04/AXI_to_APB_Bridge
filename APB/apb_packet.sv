@@ -25,9 +25,15 @@ class axi_to_apb_packet extends uvm_sequence_item;
         super.new(name);
     endfunction
 
-    constraint c_addr_range {
-        addr inside { [0:2**ADDR_WIDTH-1] };
-    }
+    constraint addr_range {addr inside {[32'h0000_0000 : 32'h0000_3FFF], 
+                                   [32'h0000_4000 : 32'h0000_7FFF], 
+                                   [32'h0000_8000 : 32'h0000_BFFF],
+                                   [32'h0000_C000 : 32'h0000_FFFF]}; }
+
+    constraint wdata_range {wdata inside {[32'h0000_0000 : 32'h0000_3FFF], 
+                                   [32'h0000_4000 : 32'h0000_7FFF], 
+                                   [32'h0000_8000 : 32'h0000_BFFF],
+                                   [32'h0000_C000 : 32'h0000_FFFF]}; }
 
     constraint c_strb_valid {
         write -> (strb != 0);

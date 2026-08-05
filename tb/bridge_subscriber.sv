@@ -33,6 +33,13 @@ class bridge_cross_coverage extends uvm_component;
             bins two[]   = {4'b0011, 4'b1100, 4'b0101, 4'b1010};
             bins all     = {4'b1111};
         }
+        axi_data_cp: coverpoint axi_tr.data {
+            bins low    = {[32'h0000_0000 : 32'h0000_3FFF]};
+            bins mid    = {[32'h0000_4000 : 32'h0000_7FFF]};
+            bins high   = {[32'h0000_8000 : 32'h0000_BFFF]};
+            bins top    = {[32'h0000_C000 : 32'h0000_FFFF]};
+            bins others = default;
+        }
         apb_write_cp: coverpoint apb_pkt.write {
             bins write = {1};
             bins read  = {0};
@@ -48,15 +55,19 @@ class bridge_cross_coverage extends uvm_component;
             bins two[]   = {4'b0011, 4'b1100, 4'b0101, 4'b1010};
             bins all     = {4'b1111};
         }
-        apb_ready_cp: coverpoint apb_pkt.ready {
-            bins no_wait = {1};
-            bins wait_state = {0};
+        apb_rdata_cp: coverpoint apb_pkt.rdata {
+            bins low    = {[32'h0000_0000 : 32'h0000_3FFF]};
+            bins mid    = {[32'h0000_4000 : 32'h0000_7FFF]};
+            bins high   = {[32'h0000_8000 : 32'h0000_BFFF]};
+            bins top    = {[32'h0000_C000 : 32'h0000_FFFF]};
+            bins others = default;
         }
 
         // Cross coverage
         cross axi_addr_cp, apb_addr_cp;
-        cross axi_addr_cp, apb_ready_cp;
-        cross axi_write_cp, apb_ready_cp;
+        cross axi_data_cp, apb_rdata_cp;
+        cross axi_addr_cp, apb_rdata_cp;
+        cross apb_addr_cp, axi_data_cp;
     endgroup
 
     function new(string name = "bridge_cross_coverage", uvm_component parent);

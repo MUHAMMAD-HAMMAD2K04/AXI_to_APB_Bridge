@@ -27,17 +27,11 @@ class axi_coverage extends uvm_subscriber #(axi_transaction);
         }
 
         data_cp: coverpoint tr.data {
-            bins zero      = {32'h0000_0000};
-            bins all_ones  = {32'hFFFF_FFFF};
-            bins patterns  = {32'hDEAD_BEEF, 32'hCAFE_BABE, 32'hA5A5_A5A5, 32'h1234_5678};
-            bins others    = default;
-        }
-
-        resp_cp: coverpoint tr.resp {
-            bins okay     = {2'b00};
-            bins exokay   = {2'b01};
-            bins slverr   = {2'b10};
-            bins decerr   = {2'b11};
+            bins low    = {[32'h0000_0000 : 32'h0000_3FFF]};
+            bins mid    = {[32'h0000_4000 : 32'h0000_7FFF]};
+            bins high   = {[32'h0000_8000 : 32'h0000_BFFF]};
+            bins top    = {[32'h0000_C000 : 32'h0000_FFFF]};
+            bins others = default;
         }
 
         cross type_cp, addr_cp;

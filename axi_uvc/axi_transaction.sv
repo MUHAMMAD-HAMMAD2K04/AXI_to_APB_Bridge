@@ -33,6 +33,16 @@ class axi_transaction extends uvm_sequence_item;
     // Constraints
     constraint addr_align_c { addr % 4 == 0; }
 
+    constraint addr_range {addr inside {[32'h0000_0000 : 32'h0000_3FFF], 
+                                   [32'h0000_4000 : 32'h0000_7FFF], 
+                                   [32'h0000_8000 : 32'h0000_BFFF],
+                                   [32'h0000_C000 : 32'h0000_FFFF]}; }
+
+    constraint data_range {data inside {[32'h0000_0000 : 32'h0000_3FFF], 
+                                   [32'h0000_4000 : 32'h0000_7FFF], 
+                                   [32'h0000_8000 : 32'h0000_BFFF],
+                                   [32'h0000_C000 : 32'h0000_FFFF]}; }
+
     // Display Transaction
     function void do_print(uvm_printer printer);
         super.do_print(printer);
