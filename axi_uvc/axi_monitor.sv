@@ -48,13 +48,15 @@ class axi_monitor extends uvm_monitor;
                     tr.data = vif.mon_cb.rd_fifo_wr_data;
                 end
 
-                ap.write(tr);
-
-                `uvm_info(get_type_name(), $sformatf("Recieved Write Transaction:\n%s", tr.sprint()), UVM_MEDIUM)
+                `uvm_info(get_type_name(), $sformatf("AXI MONITORED TRANSACTION:\n%s", tr.sprint()), UVM_DEBUG)
 
                 `uvm_info(get_type_name(),
                     $sformatf("MONITOR CAPTURED: ADDR=%h WRITE=%0d DATA=%h", tr.addr, tr.write, tr.data),
-                    UVM_MEDIUM)
+                    UVM_DEBUG)
+
+                // Publish after printing so scoreboard output follows the
+                // complete monitored transaction.
+                ap.write(tr);
             end
         end
     endtask

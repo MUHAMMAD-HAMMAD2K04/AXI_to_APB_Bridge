@@ -10,6 +10,12 @@ class axi_transaction extends uvm_sequence_item;
     rand bit [31:0] data;
     rand bit [3:0] strb;
 
+    // Testbench-only FIFO/reset controls.  These are consumed by the AXI
+    // driver and are not DUT payload fields.
+    int unsigned req_empty_cycles;
+    int unsigned rd_full_cycles;
+    bit          reset_during;
+
     // Response Channel
     bit [1:0] resp;
 
@@ -23,6 +29,9 @@ class axi_transaction extends uvm_sequence_item;
         `uvm_field_int(data, UVM_ALL_ON)
         `uvm_field_int(strb, UVM_ALL_ON)
         `uvm_field_int(resp, UVM_ALL_ON)
+        `uvm_field_int(req_empty_cycles, UVM_ALL_ON)
+        `uvm_field_int(rd_full_cycles, UVM_ALL_ON)
+        `uvm_field_int(reset_during, UVM_ALL_ON)
     `uvm_object_utils_end
 
     // Constructor
@@ -42,6 +51,16 @@ class axi_transaction extends uvm_sequence_item;
                                    [32'h0000_4000 : 32'h0000_7FFF], 
                                    [32'h0000_8000 : 32'h0000_BFFF],
                                    [32'h0000_C000 : 32'h0000_FFFF]}; }
+
+    // Write payload fields are not meaningful on an AXI read request.  Keep
+    // them at zero so logs cannot be mistaken for returned read data.  The
+    // driver replaces data with the actual read response before item_done().
+    constraint read_request_defaults_c {
+        if (!write) {
+            data == 32'h0;
+            strb == 4'h0;
+        }
+    }
 
     // Display Transaction
     function void do_print(uvm_printer printer);

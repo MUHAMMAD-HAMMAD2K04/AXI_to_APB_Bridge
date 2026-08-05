@@ -26,6 +26,9 @@ interface axi_if #(
     logic                        rd_fifo_wr_en;
     logic [DATA_WIDTH-1:0]       rd_fifo_wr_data;
 
+    // Testbench reset request; consumed only by hw_top.
+    logic                        reset_request;
+
     // Clocking Block for Driver
     clocking drv_cb @(posedge PCLK);
         default input #1step output #1ns;
@@ -37,6 +40,7 @@ interface axi_if #(
         output wr_fifo_rd_data;
 
         output rd_fifo_full;
+        output reset_request;
 
         input req_fifo_rd_en;
         input wr_fifo_rd_en;
