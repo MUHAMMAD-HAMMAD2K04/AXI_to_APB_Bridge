@@ -43,6 +43,16 @@ class axi_to_apb_packet extends uvm_sequence_item;
         !write -> (strb == 0);
     }
 
+    constraint strb_inside {
+        strb inside {
+            4'b0001, 4'b0010, 4'b0100, 4'b1000,   // single_byte
+            4'b0011, 4'b1100, 4'b0101, 4'b1010,   // two_bytes
+            4'b0111, 4'b1011, 4'b1101, 4'b1110,   // three_bytes
+            4'b1111,                              // all_bytes
+            4'b0000                               // zero
+        };
+    }
+
     function string convert2string();
         string s;
         s = super.convert2string();

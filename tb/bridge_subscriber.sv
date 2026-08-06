@@ -29,9 +29,11 @@ class bridge_cross_coverage extends uvm_component;
             bins top    = {[32'hC000:32'hFFFF]};
         }
         axi_strb_cp: coverpoint axi_tr.strb {
-            bins single[] = {4'b0001, 4'b0010, 4'b0100, 4'b1000};
-            bins two[]   = {4'b0011, 4'b1100, 4'b0101, 4'b1010};
-            bins all     = {4'b1111};
+            bins single_byte = {4'b0001, 4'b0010, 4'b0100, 4'b1000};
+            bins two_bytes   = {4'b0011, 4'b1100, 4'b0101, 4'b1010};
+            bins three_bytes   = {4'b0111, 4'b1011, 4'b1101, 4'b1110};
+            bins all_bytes     = {4'b1111};
+            bins zero          = {4'b0000};
         }
         axi_data_cp: coverpoint axi_tr.data {
             bins low    = {[32'h0000_0000 : 32'h0000_3FFF]};
@@ -51,9 +53,11 @@ class bridge_cross_coverage extends uvm_component;
             bins top    = {[32'hC000:32'hFFFF]};
         }
         apb_strb_cp: coverpoint apb_pkt.strb {
-            bins single[] = {4'b0001, 4'b0010, 4'b0100, 4'b1000};
-            bins two[]   = {4'b0011, 4'b1100, 4'b0101, 4'b1010};
-            bins all     = {4'b1111};
+            bins single_byte = {4'b0001, 4'b0010, 4'b0100, 4'b1000};
+            bins two_bytes   = {4'b0011, 4'b1100, 4'b0101, 4'b1010};
+            bins three_bytes   = {4'b0111, 4'b1011, 4'b1101, 4'b1110};
+            bins all_bytes     = {4'b1111};
+            bins zero          = {4'b0000};
         }
         apb_rdata_cp: coverpoint apb_pkt.rdata {
             bins low    = {[32'h0000_0000 : 32'h0000_3FFF]};

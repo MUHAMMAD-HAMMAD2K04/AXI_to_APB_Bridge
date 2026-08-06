@@ -733,7 +733,6 @@ class axi_regression_seq extends axi_base_seq;
         `uvm_info(get_type_name(),
                   "========== REGRESSION COMPLETED ==========",
                   UVM_LOW)
-
     endtask
 
 endclass

@@ -51,6 +51,16 @@ class axi_transaction extends uvm_sequence_item;
                                    [32'h0000_4000 : 32'h0000_7FFF], 
                                    [32'h0000_8000 : 32'h0000_BFFF],
                                    [32'h0000_C000 : 32'h0000_FFFF]}; }
+    
+    constraint strb_inside {
+        strb inside {
+            4'b0001, 4'b0010, 4'b0100, 4'b1000,   // single_byte
+            4'b0011, 4'b1100, 4'b0101, 4'b1010,   // two_bytes
+            4'b0111, 4'b1011, 4'b1101, 4'b1110,   // three_bytes
+            4'b1111,                              // all_bytes
+            4'b0000                               // zero
+        };
+    }
 
     // Write payload fields are not meaningful on an AXI read request.  Keep
     // them at zero so logs cannot be mistaken for returned read data.  The
